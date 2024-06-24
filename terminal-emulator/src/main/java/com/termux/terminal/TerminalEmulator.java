@@ -240,9 +240,7 @@ public final class TerminalEmulator {
 
     private final Stack<String> mTitleStack = new Stack<>();
 
-    /**
-     * The cursor position. Between (0,0) and (mRows-1, mColumns-1).
-     */
+    /** The cursor position. Between (0,0) and (mRows-1, mColumns-1). */
     private int mCursorRow, mCursorCol;
 
     /**
@@ -2285,11 +2283,6 @@ public final class TerminalEmulator {
         if (mArgIndex >= mArgs.length)
             mArgIndex = mArgs.length - 1;
         for (int i = 0; i <= mArgIndex; i++) {
-            // Skip leading sub parameters:
-            if ((mArgsSubParamsBitSet & (1 << i)) != 0) {
-                continue;
-            }
-
             int code = getArg(i, 0, false);
             if (code < 0) {
                 if (mArgIndex > 0) {
@@ -2858,14 +2851,9 @@ public final class TerminalEmulator {
                 mArgs[mArgIndex] = value;
             }
             continueSequence(mEscapeState);
-        } else if (b == ';' || b == ':') {
-            if (mArgIndex + 1 < mArgs.length) {
+        } else if (b == ';') {
+            if (mArgIndex < mArgs.length) {
                 mArgIndex++;
-                if (b == ':') {
-                    mArgsSubParamsBitSet |= 1 << mArgIndex;
-                }
-            } else {
-                logError("Too many parameters when in state: " + mEscapeState);
             }
             continueSequence(mEscapeState);
         } else {

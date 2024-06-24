@@ -226,12 +226,8 @@ public class TerminalTest extends TerminalTestCase {
         assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mForeColor);
         enterString("\033[31;;m");
         assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mForeColor);
-        enterString("\033[31::m");
-        assertEquals(1, mTerminal.mForeColor);
         enterString("\033[31;m");
         assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mForeColor);
-        enterString("\033[31:m");
-        assertEquals(1, mTerminal.mForeColor);
         enterString("\033[31;;41m");
         assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mForeColor);
         assertEquals(1, mTerminal.mBackColor);
@@ -252,15 +248,26 @@ public class TerminalTest extends TerminalTestCase {
 		assertEquals(129, mTerminal.mBackColor);
 
 		// Multiple parameters at once:
+<<<<<<< HEAD
 		enterString("\033[38;5;178".replace(';', separator) + ";" + "48;5;179m".replace(';', separator));
+=======
+		enterString("\033[38;5;178;48;5;179m");
+>>>>>>> f8ee16df (Fixed: Improve handling of empty ';' SGR sequences)
 		assertEquals(178, mTerminal.mForeColor);
 		assertEquals(179, mTerminal.mBackColor);
 
 		// Omitted parameter means zero:
+<<<<<<< HEAD
 		enterString("\033[38;5;m".replace(';', separator));
 		assertEquals(0, mTerminal.mForeColor);
 		assertEquals(179, mTerminal.mBackColor);
 		enterString("\033[48;5;m".replace(';', separator));
+=======
+		enterString("\033[38;5;m");
+		assertEquals(0, mTerminal.mForeColor);
+		assertEquals(179, mTerminal.mBackColor);
+		enterString("\033[48;5;m");
+>>>>>>> f8ee16df (Fixed: Improve handling of empty ';' SGR sequences)
 		assertEquals(0, mTerminal.mForeColor);
 		assertEquals(0, mTerminal.mBackColor);
 
@@ -289,6 +296,7 @@ public class TerminalTest extends TerminalTestCase {
 		assertEquals(expectedBackground, mTerminal.mBackColor);
 
 		// 24 bit colors, omitted parameter means zero:
+<<<<<<< HEAD
 		enterString("\033[38;2;255;127;m".replace(';', separator));
 		expectedForeground = 0xff000000 | (255 << 16) | (127 << 8);
 		assertEquals(expectedForeground, mTerminal.mForeColor);
@@ -303,6 +311,16 @@ public class TerminalTest extends TerminalTestCase {
 		enterString("\033[0;38:2:255:127:2:48:2:1:2:254m");
 		assertEquals(expectedForeground, mTerminal.mForeColor);
 		assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mBackColor);
+=======
+		enterString("\033[38;2;255;127;m");
+		expectedForeground = 0xff000000 | (255 << 16) | (127 << 8);
+		assertEquals(expectedForeground, mTerminal.mForeColor);
+		assertEquals(expectedBackground, mTerminal.mBackColor);
+		enterString("\033[38;2;123;;77m");
+		expectedForeground = 0xff000000 | (123 << 16) | 77;
+		assertEquals(expectedForeground, mTerminal.mForeColor);
+		assertEquals(expectedBackground, mTerminal.mBackColor);
+>>>>>>> f8ee16df (Fixed: Improve handling of empty ';' SGR sequences)
 	}
 
     public void testBackgroundColorErase() {
