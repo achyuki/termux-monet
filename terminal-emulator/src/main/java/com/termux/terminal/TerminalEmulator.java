@@ -146,6 +146,10 @@ public final class TerminalEmulator {
      * Escape processing: CSI !
      */
     private static final int ESC_CSI_EXCLAMATION = 19;
+    /** Escape processing: "ESC _" or Application Program Command (APC). */
+    private static final int ESC_APC = 20;
+    /** Escape processing: "ESC _" or Application Program Command (APC), followed by Escape. */
+    private static final int ESC_APC_ESCAPE = 21;
 
     /**
      * Escape processing: APC
@@ -724,10 +728,17 @@ public final class TerminalEmulator {
     }
 
     public void processCodePoint(int b) {
-        mScreen.bitmapGC(300000);
-        switch(b) {
-            case // Null character (NUL, ^@). Do nothing.
-            0:
+        // The Application Program-Control (APC) string might be arbitrary non-printable characters, so handle that early.
+        if (mEscapeState == ESC_APC) {
+            doApc(b);
+            return;
+        } else if (mEscapeState == ESC_APC_ESCAPE) {
+            doApcEscape(b);
+            return;
+        }
+
+        switch (b) {
+            case 0: // Null character (NUL, ^@). Do nothing.
                 break;
             case // Bell (BEL, ^G, \a). If in an OSC sequence, BEL may terminate a string; otherwise signal bell.
             7:
@@ -1348,6 +1359,30 @@ public final class TerminalEmulator {
         }
     }
 
+    /**
+     * When in {@link #ESC_APC} (APC, Application Program Command) sequence.
+     */
+    private void doApc(int b) {
+        if (b == 27) {
+            continueSequence(ESC_APC_ESCAPE);
+        }
+        // Eat APC sequences silently for now.
+    }
+
+    /**
+     * When in {@link #ESC_APC} (APC, Application Program Command) sequence.
+     */
+    private void doApcEscape(int b) {
+        if (b == '\\') {
+            // A String Terminator (ST), ending the APC escape sequence.
+            finishSequence();
+        } else {
+            // The Escape character was not the start of a String Terminator (ST),
+            // but instead just data inside of the APC escape sequence.
+            continueSequence(ESC_APC);
+        }
+    }
+
     private int nextTabStop(int numTabs) {
         for (int i = mCursorCol + 1; i < mColumns; i++) if (mTabStop[i] && --numTabs == 0)
             return Math.min(i, mRightMargin);
@@ -1822,9 +1857,7 @@ public final class TerminalEmulator {
             '>':
                 setDecsetinternalBit(DECSET_BIT_APPLICATION_KEYPAD, false);
                 break;
-            case // APC
-            '_':
-                mOSCOrDeviceControlArgs.setLength(0);
+            case '_': // APC - Application Program Command.
                 continueSequence(ESC_APC);
                 break;
             default:
