@@ -147,16 +147,6 @@
             </intent-filter>
         </activity-alias>
 
-        <activity android:name="android.app.NativeActivity" android:configChanges="orientation|screenSize">
-            <!-- Tell NativeActivity the name of our .so -->
-            <meta-data android:name="android.app.lib_name" android:value="native-entrypoint"/>
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-
         <activity-alias
             android:name=".app.api.file.FileViewReceiverActivity"
             android:exported="true"

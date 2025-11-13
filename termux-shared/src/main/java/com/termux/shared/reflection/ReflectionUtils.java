@@ -1,10 +1,14 @@
 package com.termux.shared.reflection;
 
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.termux.shared.logger.Logger;
-import org.chickenhook.restrictionbypass.Unseal;
+
+import org.lsposed.hiddenapibypass.HiddenApiBypass;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,27 +22,30 @@ public class ReflectionUtils {
 
     /**
      * Bypass android hidden API reflection restrictions.
-     * https://github.com/ChickenHook/RestrictionBypass
+     * https://github.com/LSPosed/AndroidHiddenApiBypass
      * https://developer.android.com/guide/app-compatibility/restrictions-non-sdk-interfaces
      */
     public static void bypassHiddenAPIReflectionRestrictions() {
         if (!HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Logger.logDebug(LOG_TAG, "Bypassing android hidden api reflection restrictions");
             try {
-                Unseal.unseal();
+                HiddenApiBypass.addHiddenApiExemptions("");
             } catch (Throwable t) {
                 Logger.logStackTraceWithMessage(LOG_TAG, "Failed to bypass hidden API reflection restrictions", t);
             }
+
             HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED = true;
         }
     }
 
-    /**
-     * Check if android hidden API reflection restrictions are bypassed.
-     */
+    /** Check if android hidden API reflection restrictions are bypassed. */
     public static boolean areHiddenAPIReflectionRestrictionsBypassed() {
         return HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED;
     }
+
+
+
+
 
     /**
      * Get a {@link Field} for the specified class.
@@ -59,13 +66,11 @@ public class ReflectionUtils {
         }
     }
 
-    /**
-     * Class that represents result of invoking a field.
-     */
+
+
+    /** Class that represents result of invoking a field. */
     public static class FieldInvokeResult {
-
         public boolean success;
-
         public Object value;
 
         FieldInvokeResult(boolean success, Object value) {
@@ -91,14 +96,17 @@ public class ReflectionUtils {
     public static <T> FieldInvokeResult invokeField(@NonNull Class<? extends T> clazz, @NonNull String fieldName, T object) {
         try {
             Field field = getDeclaredField(clazz, fieldName);
-            if (field == null)
-                return new FieldInvokeResult(false, null);
+            if (field == null) return new FieldInvokeResult(false, null);
             return new FieldInvokeResult(true, field.get(object));
         } catch (Exception e) {
             Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get \"" + fieldName + "\" field value for \"" + clazz.getName() + "\" class", e);
             return new FieldInvokeResult(false, null);
         }
     }
+
+
+
+
 
     /**
      * Wrapper for {@link #getDeclaredMethod(Class, String, Class[])} without parameters.
@@ -128,6 +136,8 @@ public class ReflectionUtils {
         }
     }
 
+
+
     /**
      * Wrapper for {@link #invokeVoidMethod(Method, Object, Object...)} without arguments.
      */
@@ -155,13 +165,11 @@ public class ReflectionUtils {
         }
     }
 
-    /**
-     * Class that represents result of invoking a method that has a non-void return type.
-     */
+
+
+    /** Class that represents result of invoking a method that has a non-void return type. */
     public static class MethodInvokeResult {
-
         public boolean success;
-
         public Object value;
 
         MethodInvokeResult(boolean success, Object value) {
@@ -199,6 +207,8 @@ public class ReflectionUtils {
             return new MethodInvokeResult(false, null);
         }
     }
+
+
 
     /**
      * Wrapper for {@link #getConstructor(String, Class[])} without parameters.
@@ -241,6 +251,8 @@ public class ReflectionUtils {
         }
     }
 
+
+
     /**
      * Wrapper for {@link #invokeConstructor(Constructor, Object...)} without arguments.
      */
@@ -266,4 +278,5 @@ public class ReflectionUtils {
             return null;
         }
     }
+
 }
