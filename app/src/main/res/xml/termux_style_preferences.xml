@@ -7,14 +7,12 @@
 
         <SwitchPreferenceCompat
             app:key="background_image_enabled"
-            app:summaryOff="@string/termux_background_image_enabled_off"
-            app:summaryOn="@string/termux_background_image_enabled_on"
+            app:summary="@string/termux_background_image_enabled"
             app:title="@string/termux_background_image_enabled_title" />
             
         <SwitchPreferenceCompat
             app:key="monet_background_enabled"
-            app:summaryOff="@string/termux_monet_background_enabled_off"
-            app:summaryOn="@string/termux_monet_background_enabled_on"
+            app:summary="@string/termux_monet_background_enabled"
             app:title="@string/termux_monet_background_enabled_title" />
     </PreferenceCategory>
     
@@ -24,8 +22,7 @@
         
         <SwitchPreferenceCompat
             app:key="extrakeys_blur_enabled"
-            app:summaryOff="@string/termux_extrakeys_blur_enabled_off"
-            app:summaryOn="@string/termux_extrakeys_blur_enabled_on"
+            app:summary="@string/termux_extrakeys_blur_enabled"
             app:title="@string/termux_extrakeys_blur_enabled_title" />
     </PreferenceCategory>
     
@@ -35,8 +32,7 @@
         
         <SwitchPreferenceCompat
             app:key="sessions_blur_enabled"
-            app:summaryOff="@string/termux_sessions_blur_enabled_off"
-            app:summaryOn="@string/termux_sessions_blur_enabled_on"
+            app:summary="@string/termux_sessions_blur_enabled"
             app:title="@string/termux_sessions_blur_enabled_title" />
     </PreferenceCategory>
 
