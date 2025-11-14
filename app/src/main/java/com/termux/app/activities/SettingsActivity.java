@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import com.termux.R;
@@ -14,7 +16,9 @@ import com.termux.shared.models.ReportInfo;
 import com.termux.app.models.UserAction;
 import com.termux.shared.interact.ShareUtils;
 import com.termux.shared.android.PackageUtils;
+import com.termux.shared.logger.Logger;
 import com.termux.shared.termux.settings.preferences.TermuxAPIAppSharedPreferences;
+import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
 import com.termux.shared.termux.settings.preferences.TermuxGUIAppSharedPreferences;
 import com.termux.shared.termux.settings.preferences.TermuxFloatAppSharedPreferences;
 import com.termux.shared.termux.settings.preferences.TermuxTaskerAppSharedPreferences;
@@ -24,8 +28,12 @@ import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxUtils;
 import com.termux.shared.activity.media.AppCompatActivityUtils;
 import com.termux.shared.theme.NightMode;
+import java.util.concurrent.Executor;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = "TermuxSettings";
+    private TermuxAppSharedPreferences mPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,56 @@ public class SettingsActivity extends AppCompatActivity {
         }
         AppCompatActivityUtils.setToolbar(this, com.termux.shared.R.id.toolbar);
         AppCompatActivityUtils.setShowBackButtonInActionBar(this, true);
+        mPreferences = TermuxAppSharedPreferences.build(this, true);
+        if (mPreferences.isBiometricAuthEnabled()) {
+            launchBiometricAuth();
+        }
+    }
+
+    private void launchBiometricAuth() {
+        Executor executor = ContextCompat.getMainExecutor(this);
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor, 
+            new BiometricPrompt.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationError(int errorCode, CharSequence errString) {
+                    super.onAuthenticationError(errorCode, errString);
+                    Logger.logInfo(LOG_TAG, "Authentication error: " + errString);
+                    finishActivityIfNotFinishing();
+                }
+
+                @Override
+                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                    super.onAuthenticationSucceeded(result);
+                    Logger.logInfo(LOG_TAG, "Authentication succeeded");
+                    
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    super.onAuthenticationFailed();
+                    Logger.logInfoAndShowToast(SettingsActivity.this, LOG_TAG, "Authentication failed");
+                    finishActivityIfNotFinishing();
+                }
+            });
+
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric Auth")
+            .setSubtitle("Please verify your identity.")
+            .setNegativeButtonText("Cancel")
+            .build();
+
+        biometricPrompt.authenticate(promptInfo);
+    }
+
+    public void finishActivityIfNotFinishing() {
+        // prevent duplicate calls to finish() if called from multiple places
+        if (!SettingsActivity.this.isFinishing()) {
+            if (mPreferences.isRemoveTaskOnActivityFinishEnabled())
+                finishAndRemoveTask();
+            else
+                finish();
+        }
     }
 
     @Override

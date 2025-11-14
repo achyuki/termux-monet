@@ -315,7 +315,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             });
 
         BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-            .setTitle("BiometricAuth")
+            .setTitle("Biometric Auth")
             .setSubtitle("Please verify your identity.")
             .setNegativeButtonText("Cancel")
             .build();
