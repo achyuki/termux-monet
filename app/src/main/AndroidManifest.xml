@@ -65,7 +65,7 @@
             android:label="@string/application_name"
             android:launchMode="singleTask"
             android:resizeableActivity="true"
-            android:theme="@style/Theme.TermuxActivity.DayNight.NoActionBar"
+            android:theme="@style/Theme.TermuxActivity.Dark.NoActionBar"
             tools:targetApi="o">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
