@@ -336,7 +336,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mPreferences.isTerminalMarginAdjustmentEnabled())
             addTermuxActivityRootViewGlobalLayoutListener();
     
-        configureViewVisibility(R.id.terminal_monetbackground, mPreferences.isMonetBackgroundEnabled());
+        configureMonetBackground();
         configureBackgroundBlur(R.id.sessions_backgroundblur, R.id.sessions_background, mPreferences.isSessionsBlurEnabled(), 0.5f);
         configureExtraKeysBackground();
     
@@ -354,7 +354,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onResume();
 
-        configureViewVisibility(R.id.terminal_monetbackground, mPreferences.isMonetBackgroundEnabled());
+        configureMonetBackground();
         configureBackgroundBlur(R.id.sessions_backgroundblur, R.id.sessions_background, mPreferences.isSessionsBlurEnabled(), 0.5f);
         configureExtraKeysBackground();
         
@@ -364,9 +364,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         mIsOnResumeAfterOnCreate = false;
     }
 
-    private void configureViewVisibility(int viewId, boolean isVisible) {
-        View view = findViewById(viewId);
-        view.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    private void configureMonetBackground() {
+        if (mPreferences.isMonetBackgroundEnabled())
+            mTermuxActivityRootView.setBackgroundResource(R.color.background_accent);
+        else
+            mTermuxActivityRootView.setBackgroundResource(android.R.drawable.screen_background_dark_transparent);
     }
     
     private void configureBackgroundBlur(int blurViewId, int backgroundViewId, boolean isBlurEnabled, float alphaIfBlurred) {
