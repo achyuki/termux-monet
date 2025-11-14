@@ -365,9 +365,9 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         TermuxService service = mActivity.getTermuxService();
         if (service == null)
             return;
-        if (service.getTermuxSessionsSize() >= MAX_SESSIONS) {
+        /*if (service.getTermuxSessionsSize() >= MAX_SESSIONS) {
             new AlertDialog.Builder(mActivity).setTitle(R.string.title_max_terminals_reached).setMessage(R.string.msg_max_terminals_reached).setPositiveButton(android.R.string.ok, null).show();
-        } else {
+        } else {*/
             TerminalSession currentSession = mActivity.getCurrentSession();
             String workingDirectory;
             if (currentSession == null) {
@@ -381,7 +381,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
             setCurrentSession(newTerminalSession);
             mActivity.getDrawer().closeDrawers();
-        }
+        //}
     }
 
     public void setCurrentStoredSession() {
