@@ -26,6 +26,7 @@ import com.termux.shared.termux.shell.command.environment.TermuxShellEnvironment
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import static com.termux.shared.termux.TermuxConstants.TERMUX_FILES_DIR_PATH;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_PREFIX_DIR;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_PREFIX_DIR_PATH;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_STAGING_PREFIX_DIR;
@@ -181,6 +183,26 @@ final class TermuxInstaller {
                                     }
                                 }
                             }
+                        }
+                    }
+                    InputStream inputStream = activity.getAssets().open("bootstrap-overlay.zip");
+                    try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
+                        ZipEntry zipEntry;
+                        while ((zipEntry = zipInput.getNextEntry()) != null) {
+                                String zipEntryName = zipEntry.getName();
+                                File targetFile = new File(TERMUX_FILES_DIR_PATH, zipEntryName);
+                                boolean isDirectory = zipEntry.isDirectory();
+                                error = ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile());
+                                if (error != null) {
+                                    showBootstrapErrorDialog(activity, whenDone, Error.getErrorMarkdownString(error));
+                                    return;
+                                }
+                                if (!isDirectory) {
+                                    try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
+                                        int readBytes;
+                                        while ((readBytes = zipInput.read(buffer)) != -1) outStream.write(buffer, 0, readBytes);
+                                    }
+                                } 
                         }
                     }
                     if (symlinks.isEmpty())
