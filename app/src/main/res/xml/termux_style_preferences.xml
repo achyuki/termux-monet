@@ -3,7 +3,7 @@
 
     <PreferenceCategory
         app:key="background"
-        app:title="@string/termux_background_header">
+        app:title="@string/termux_appearance_header">
 
         <SwitchPreferenceCompat
             app:key="background_image_enabled"
@@ -14,26 +14,26 @@
             app:key="monet_background_enabled"
             app:summary="@string/termux_monet_background_enabled"
             app:title="@string/termux_monet_background_enabled_title" />
-    </PreferenceCategory>
-    
-    <PreferenceCategory
-        app:key="extrakeys"
-        app:title="@string/termux_extrakeys_header">
         
         <SwitchPreferenceCompat
             app:key="extrakeys_blur_enabled"
             app:summary="@string/termux_extrakeys_blur_enabled"
             app:title="@string/termux_extrakeys_blur_enabled_title" />
-    </PreferenceCategory>
-    
-    <PreferenceCategory
-        app:key="sessions"
-        app:title="@string/termux_sessions_header">
         
         <SwitchPreferenceCompat
             app:key="sessions_blur_enabled"
             app:summary="@string/termux_sessions_blur_enabled"
             app:title="@string/termux_sessions_blur_enabled_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="background"
+        app:title="@string/termux_security_header">
+
+        <SwitchPreferenceCompat
+            app:key="biometric_auth_enabled"
+            app:summary="@string/termux_biometric_auth_enabled"
+            app:title="@string/termux_biometric_auth_enabled_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

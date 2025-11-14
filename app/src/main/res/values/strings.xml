@@ -225,33 +225,34 @@
 
 
         <!-- Termux Style Preferences -->
-        <string name="termux_style_preferences_title">&TERMUX_APP_NAME; Appearance</string>
+        <string name="termux_style_preferences_title">Experiment</string>
         <string name="termux_style_preferences_summary">Preferences for &TERMUX_APP_NAME; appearance and customisation</string>
 
-            <!-- Background Category -->
-            <string name="termux_background_header">Background</string>
+            <!-- Appearance Category -->
+            <string name="termux_appearance_header">Appearance</string>
+
+            <!-- Security Category -->
+            <string name="termux_security_header">Security</string>
 
                 <!-- Background Image -->
-                <string name="termux_background_image_enabled_title">Display background image</string>
+                <string name="termux_background_image_enabled_title">Display Background Image</string>
                 <string name="termux_background_image_enabled">Set a new background via the terminal context menu.</string>
                 
                 <!-- Monet Background -->
                 <string name="termux_monet_background_enabled_title">Monet Background</string>
                 <string name="termux_monet_background_enabled">Turns the terminal background into monet.</string>
                 
-            <!-- Extra Keys Category -->
-            <string name="termux_extrakeys_header">Extra Keys</string>
-                
                 <!-- Extra Keys Blur -->
                 <string name="termux_extrakeys_blur_enabled_title">Extra Keys Blurred Background</string>
                 <string name="termux_extrakeys_blur_enabled">Adds a transparent and blurred Background to Extra Keys.</string>
-                
-            <!-- Sessions Category -->
-            <string name="termux_sessions_header">Sessions Menu</string>
             
                 <!-- Sessions Blur -->
                 <string name="termux_sessions_blur_enabled_title">Sessions Blurred Background</string>
                 <string name="termux_sessions_blur_enabled">Adds a transparent and blurred Background to Sessions Menu.</string>
+
+                <!-- Biometric Auth -->
+                <string name="termux_biometric_auth_enabled_title">Biometric Authentication</string>
+                <string name="termux_biometric_auth_enabled">Verify your identity when launching &TERMUX_APP_NAME;.</string>
 
 
 

@@ -223,6 +223,13 @@ public final class TermuxPreferenceConstants {
         public static final String KEY_MONET_BACKGROUND_ENABLED = "monet_background_enabled";
 
         public static final boolean DEFAULT_VALUE_MONET_BACKGROUND_ENABLED = true;
+
+        /**
+         * Defines the key for whether biometric auth is enabled or not.
+         */
+        public static final String KEY_BIOMETRIC_AUTH_ENABLED = "biometric_auth_enabled";
+
+        public static final boolean DEFAULT_VALUE_BIOMETRIC_AUTH_ENABLED = false;
     }
 
     /**

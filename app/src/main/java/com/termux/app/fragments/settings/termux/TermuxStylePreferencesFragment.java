@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.biometric.BiometricManager;
 import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -23,7 +24,7 @@ public class TermuxStylePreferencesFragment extends PreferenceFragmentCompat {
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceDataStore(TermuxStylePreferencesDataStore.getInstance(context));
         setPreferencesFromResource(R.xml.termux_style_preferences, rootKey);
-        configureBackgroundPreferences(context);
+        configurePreferences(context);
     }
 
     /**
@@ -31,7 +32,7 @@ public class TermuxStylePreferencesFragment extends PreferenceFragmentCompat {
      *
      * @param context The context for operations.
      */
-    private void configureBackgroundPreferences(@NonNull Context context) {
+    private void configurePreferences(@NonNull Context context) {
         SwitchPreferenceCompat backgroundImagePreference = findPreference("background_image_enabled");
         if (backgroundImagePreference != null) {
             TermuxAppSharedPreferences preferences = TermuxAppSharedPreferences.build(context, true);
@@ -43,6 +44,16 @@ public class TermuxStylePreferencesFragment extends PreferenceFragmentCompat {
                 backgroundImagePreference.setEnabled(false);
             }
         }
+
+        SwitchPreferenceCompat biometricAuthPreference = findPreference("biometric_auth_enabled");
+        if (biometricAuthPreference != null && !isBiometricAuthAvailable(context)) {
+            biometricAuthPreference.setEnabled(false);
+        }
+    }
+
+    private boolean isBiometricAuthAvailable(Context context) {
+        BiometricManager biometricManager = BiometricManager.from(context);
+        return biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS;
     }
 }
 
@@ -85,6 +96,9 @@ class TermuxStylePreferencesDataStore extends PreferenceDataStore {
             case "monet_background_enabled":
                 mPreferences.setMonetBackgroundEnabled(value);
                 break;
+            case "biometric_auth_enabled":
+                mPreferences.setBiometricAuthEnabled(value);
+                break;
             default:
                 break;
         }
@@ -103,6 +117,8 @@ class TermuxStylePreferencesDataStore extends PreferenceDataStore {
                 return mPreferences.isSessionsBlurEnabled();
             case "monet_background_enabled":
                 return mPreferences.isMonetBackgroundEnabled();
+            case "biometric_auth_enabled":
+                return mPreferences.isBiometricAuthEnabled();
             default:
                 return false;
         }
