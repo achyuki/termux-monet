@@ -2,7 +2,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:key="background"
         app:title="@string/termux_appearance_header">
 
         <SwitchPreferenceCompat
@@ -27,13 +26,21 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="background"
         app:title="@string/termux_security_header">
 
         <SwitchPreferenceCompat
             app:key="biometric_auth_enabled"
             app:summary="@string/termux_biometric_auth_enabled"
             app:title="@string/termux_biometric_auth_enabled_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/termux_extension_header">
+
+        <SwitchPreferenceCompat
+            app:key="builtin_tapi_enabled"
+            app:summary="@string/termux_builtin_tapi_enabled"
+            app:title="@string/termux_builtin_tapi_enabled_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

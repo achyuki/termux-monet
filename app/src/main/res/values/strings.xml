@@ -234,6 +234,9 @@
             <!-- Security Category -->
             <string name="termux_security_header">Security</string>
 
+            <!-- Extension Category -->
+            <string name="termux_extension_header">Extension</string>
+
                 <!-- Background Image -->
                 <string name="termux_background_image_enabled_title">Display Background Image</string>
                 <string name="termux_background_image_enabled">Set a new background via the terminal context menu.</string>
@@ -253,6 +256,10 @@
                 <!-- Biometric Auth -->
                 <string name="termux_biometric_auth_enabled_title">Biometric Authentication</string>
                 <string name="termux_biometric_auth_enabled">Verify your identity when launching &TERMUX_APP_NAME;.</string>
+
+                <!-- Built-in termux:api -->
+                <string name="termux_builtin_tapi_enabled_title">Built-in Termux:API</string>
+                <string name="termux_builtin_tapi_enabled">Enable the built-in Termux:API.</string>
 
 
 

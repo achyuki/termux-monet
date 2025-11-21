@@ -1,22 +1,51 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
+apply plugin: 'com.android.library'
+
+android {
+    namespace "com.termux.api"
+    compileSdk project.properties.compileSdkVersion.toInteger()
+
+    defaultConfig {
+        minSdk project.properties.minSdkVersion.toInteger()
+        targetSdk project.properties.targetSdkVersion.toInteger()
     }
-    dependencies {
-        classpath "com.android.tools.build:gradle:8.7.3"
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false // Reproducible builds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+
+    }
+
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    packagingOptions {
+        // Remove terminal-emulator and termux-shared JNI libs added via termux-shared dependency
+        exclude "lib/*/libtermux.so"
+        exclude "lib/*/liblocal-socket.so"
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        //mavenLocal()
-        maven { url "https://jitpack.io" }
-    }
-}
+dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.1.5"
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    implementation "com.google.android.material:material:1.12.0"
+    implementation "androidx.biometric:biometric:1.2.0-alpha05"
+    implementation "androidx.media:media:1.7.0"
+    implementation "androidx.preference:preference:1.2.1"
+
+    implementation project(":termux-shared")
+    // Use if below libraries are published locally by termux-app with `./gradlew publishReleasePublicationToMavenLocal` and used with `mavenLocal()`.
+    // If updates are done, republish there and sync project with gradle files here
+    // https://github.com/termux/termux-app/wiki/Termux-Libraries
+    //implementation "com.termux:termux-shared:0.118.0"
+
+    implementation "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava"
 }

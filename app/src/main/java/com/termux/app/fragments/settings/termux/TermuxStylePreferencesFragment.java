@@ -11,7 +11,9 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import com.termux.R;
 import com.termux.app.style.TermuxBackgroundManager;
+import com.termux.shared.file.FileUtils;
 import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
+import static com.termux.shared.termux.TermuxConstants.TERMUX_DATA_HOME_DIR_PATH;
 
 @Keep
 public class TermuxStylePreferencesFragment extends PreferenceFragmentCompat {
@@ -65,6 +67,8 @@ class TermuxStylePreferencesDataStore extends PreferenceDataStore {
 
     private static TermuxStylePreferencesDataStore mInstance;
 
+    private final String BUILTIN_TAPI_ENABLED_FLAG_PATH = TERMUX_DATA_HOME_DIR_PATH + "/enable-built-in-tapi";
+
     private TermuxStylePreferencesDataStore(Context context) {
         mContext = context;
         mPreferences = TermuxAppSharedPreferences.build(context, true);
@@ -99,6 +103,12 @@ class TermuxStylePreferencesDataStore extends PreferenceDataStore {
             case "biometric_auth_enabled":
                 mPreferences.setBiometricAuthEnabled(value);
                 break;
+            case "builtin_tapi_enabled":
+                if (value)
+                    FileUtils.createRegularFile(BUILTIN_TAPI_ENABLED_FLAG_PATH);
+                else
+                    FileUtils.deleteFile(null, BUILTIN_TAPI_ENABLED_FLAG_PATH, true);
+                break;
             default:
                 break;
         }
@@ -119,6 +129,8 @@ class TermuxStylePreferencesDataStore extends PreferenceDataStore {
                 return mPreferences.isMonetBackgroundEnabled();
             case "biometric_auth_enabled":
                 return mPreferences.isBiometricAuthEnabled();
+            case "builtin_tapi_enabled":
+                return FileUtils.fileExists(BUILTIN_TAPI_ENABLED_FLAG_PATH, true);
             default:
                 return false;
         }
