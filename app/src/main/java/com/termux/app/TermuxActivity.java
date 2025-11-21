@@ -415,9 +415,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private void configureExtraKeysBackground() {
         View extraKeysBackground = findViewById(R.id.extrakeys_background);
         View extraKeysBackgroundBlur = findViewById(R.id.extrakeys_backgroundblur);
-        boolean isToolbarToggled = mPreferences.toogleShowTerminalToolbar();
+        boolean isToolbarEnabled = mPreferences.shouldShowTerminalToolbar();
 
-        if (!isToolbarToggled) {
+        if (!isToolbarEnabled) {
             extraKeysBackgroundBlur.setVisibility(View.GONE);
             extraKeysBackground.setVisibility(View.GONE);
         } else {
