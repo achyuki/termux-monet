@@ -20,6 +20,8 @@ public class TermuxApplication extends Application {
 
     private static final String LOG_TAG = "TermuxApplication";
 
+    public static boolean isBiometricAuthed = false;
+
     public void onCreate() {
         super.onCreate();
         Context context = getApplicationContext();

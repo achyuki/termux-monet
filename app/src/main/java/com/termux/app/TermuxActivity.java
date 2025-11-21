@@ -39,6 +39,7 @@ import com.termux.app.style.TermuxBackgroundManager;
 import com.termux.app.terminal.TermuxActivityRootView;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
+import com.termux.app.utils.BiometricAuthUtil;
 import com.termux.shared.activities.ReportActivity;
 import com.termux.shared.activity.ActivityUtils;
 import com.termux.shared.activity.media.AppCompatActivityUtils;
@@ -280,47 +281,34 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         setToggleKeyboardView();
         registerForContextMenu(mTerminalView);
         FileReceiverActivity.updateFileReceiverActivityComponentsState(this);
-        if (mPreferences.isBiometricAuthEnabled()) {
-            launchBiometricAuth();
+        if (!TermuxApplication.isBiometricAuthed && mPreferences.isBiometricAuthEnabled()) {
+            BiometricAuthUtil.launchBiometricAuth(this,
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence errString) {
+                        super.onAuthenticationError(errorCode, errString);
+                        Logger.logInfo(LOG_TAG, "Authentication error: " + errString);
+                        finishActivityIfNotFinishing();
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        Logger.logInfo(LOG_TAG, "Authentication succeeded");
+                        TermuxApplication.isBiometricAuthed = true;
+                        launchTermuxService();
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        super.onAuthenticationFailed();
+                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG, "Authentication failed");
+                        finishActivityIfNotFinishing();
+                    }
+                });
         } else {
             launchTermuxService();
         }
-    }
-
-    private void launchBiometricAuth() {
-        Executor executor = ContextCompat.getMainExecutor(this);
-
-        BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor, 
-            new BiometricPrompt.AuthenticationCallback() {
-                @Override
-                public void onAuthenticationError(int errorCode, CharSequence errString) {
-                    super.onAuthenticationError(errorCode, errString);
-                    Logger.logInfo(LOG_TAG, "Authentication error: " + errString);
-                    finishActivityIfNotFinishing();
-                }
-
-                @Override
-                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    Logger.logInfo(LOG_TAG, "Authentication succeeded");
-                    launchTermuxService();
-                }
-
-                @Override
-                public void onAuthenticationFailed() {
-                    super.onAuthenticationFailed();
-                    Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG, "Authentication failed");
-                    finishActivityIfNotFinishing();
-                }
-            });
-
-        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric Auth")
-            .setSubtitle("Please verify your identity.")
-            .setNegativeButtonText("Cancel")
-            .build();
-
-        biometricPrompt.authenticate(promptInfo);
     }
 
     private void launchTermuxService() {

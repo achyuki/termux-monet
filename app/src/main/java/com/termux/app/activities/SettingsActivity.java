@@ -6,14 +6,15 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import com.termux.app.TermuxApplication;
 import com.termux.R;
 import com.termux.shared.activities.ReportActivity;
 import com.termux.shared.file.FileUtils;
 import com.termux.shared.models.ReportInfo;
 import com.termux.app.models.UserAction;
+import com.termux.app.utils.BiometricAuthUtil;
 import com.termux.shared.interact.ShareUtils;
 import com.termux.shared.android.PackageUtils;
 import com.termux.shared.logger.Logger;
@@ -46,45 +47,31 @@ public class SettingsActivity extends AppCompatActivity {
         AppCompatActivityUtils.setToolbar(this, com.termux.shared.R.id.toolbar);
         AppCompatActivityUtils.setShowBackButtonInActionBar(this, true);
         mPreferences = TermuxAppSharedPreferences.build(this, true);
-        if (mPreferences.isBiometricAuthEnabled()) {
-            launchBiometricAuth();
+        if (!TermuxApplication.isBiometricAuthed && mPreferences.isBiometricAuthEnabled()) {
+            BiometricAuthUtil.launchBiometricAuth(this,
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence errString) {
+                        super.onAuthenticationError(errorCode, errString);
+                        Logger.logInfo(LOG_TAG, "Authentication error: " + errString);
+                        finishActivityIfNotFinishing();
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        Logger.logInfo(LOG_TAG, "Authentication succeeded");
+                        TermuxApplication.isBiometricAuthed = true;
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        super.onAuthenticationFailed();
+                        Logger.logInfoAndShowToast(SettingsActivity.this, LOG_TAG, "Authentication failed");
+                        finishActivityIfNotFinishing();
+                    }
+                });
         }
-    }
-
-    private void launchBiometricAuth() {
-        Executor executor = ContextCompat.getMainExecutor(this);
-
-        BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor, 
-            new BiometricPrompt.AuthenticationCallback() {
-                @Override
-                public void onAuthenticationError(int errorCode, CharSequence errString) {
-                    super.onAuthenticationError(errorCode, errString);
-                    Logger.logInfo(LOG_TAG, "Authentication error: " + errString);
-                    finishActivityIfNotFinishing();
-                }
-
-                @Override
-                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    Logger.logInfo(LOG_TAG, "Authentication succeeded");
-                    
-                }
-
-                @Override
-                public void onAuthenticationFailed() {
-                    super.onAuthenticationFailed();
-                    Logger.logInfoAndShowToast(SettingsActivity.this, LOG_TAG, "Authentication failed");
-                    finishActivityIfNotFinishing();
-                }
-            });
-
-        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric Auth")
-            .setSubtitle("Please verify your identity.")
-            .setNegativeButtonText("Cancel")
-            .build();
-
-        biometricPrompt.authenticate(promptInfo);
     }
 
     public void finishActivityIfNotFinishing() {
