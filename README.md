@@ -2,38 +2,8 @@
   <img src="/art/logo_dark.png#gh-dark-mode-only">
   <img src="/art/logo_light.png#gh-light-mode-only">
 </p>
-<div align="center">
-  <a href="https://github.com/Termux-Monet/termux-monet/actions/workflows/debug_build.yml?query=branch%3Amaster">
-    <img src="https://img.shields.io/github/actions/workflow/status/Termux-Monet/termux-monet/debug_build.yml?branch=master&label=Build&logo=gradle"/>
-  </a>
-  <a href="https://github.com/Termux-Monet/termux-monet/actions/workflows/run_tests.yml?query=branch%3Amaster">
-    <img src="https://img.shields.io/github/actions/workflow/status/Termux-Monet/termux-monet/run_tests.yml?branch=master&label=Test&logo=gradle"/>
-  </a>
-  <a href="https://hosted.weblate.org/engage/termux-monet/">
-    <img src="https://hosted.weblate.org/widgets/termux-monet/-/svg-badge.svg" alt="Translation status" />
-  </a>
-</div>
-<br />
-<div align="center">
-  <a href="https://www.android.com/versions/oreo-8-0/">
-    <img src="https://img.shields.io/static/v1?label=Android&message=8%2B&color=brightgreen&style=flat&logo=android&logoColor=white"/>
-  </a>
-  <a href="https://github.com/Termux-Monet/termux-monet/commits/master">
-    <img src="https://img.shields.io/github/last-commit/Termux-Monet/termux-monet/master?color=informational&label=Updated&logo=github"/>
-  </a>
-  <a href="https://github.com/Termux-Monet/termux-monet/releases">
-    <img src="https://badgen.net/github/tag/Termux-Monet/termux-monet?icon=terminal&color=orange&label=Latest"/>
-  </a>
-  <a href="/LICENSE">
-    <img src="https://img.shields.io/badge/License-GPLv3_only-informational.svg?logo=gnu&label=License"/>
-  </a>
-</div>
-<br />
 
-<p align="center">
-  <img src="/art/screenshot_dark.png#gh-dark-mode-only" height=50%>
-  <img src="/art/screenshot_light.png#gh-light-mode-only" height=50%>
-</p>
+## This is my fork of termux-monet.
 
 ***
 
