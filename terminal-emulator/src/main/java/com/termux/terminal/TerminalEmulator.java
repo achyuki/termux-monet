@@ -151,12 +151,6 @@ public final class TerminalEmulator {
     /** Escape processing: "ESC _" or Application Program Command (APC), followed by Escape. */
     private static final int ESC_APC_ESCAPE = 21;
 
-    /**
-     * Escape processing: APC
-     */
-    private static final int ESC_APC = 20;
-    /** Escape processing: "ESC _" or Application Program Command (APC), followed by Escape. */
-    private static final int ESC_APC_ESCAPE = 21;
     /** Escape processing: ESC [ <parameter bytes> */
     private static final int ESC_CSI_UNSUPPORTED_PARAMETER_BYTE = 22;
     /** Escape processing: ESC [ <parameter bytes> <intermediate bytes> */
@@ -743,9 +737,6 @@ public final class TerminalEmulator {
                 if (mEscapeState == ESC_OSC)
                     doOsc(b);
                 else {
-                    if (mEscapeState == ESC_APC) {
-                        doApc(b);
-                    }
                     mSession.onBell();
                 }
                 break;
@@ -817,11 +808,7 @@ public final class TerminalEmulator {
                     ESC_P_escape = true;
                     return;
                 } else if (mEscapeState != ESC_OSC) {
-                    if (mEscapeState != ESC_APC) {
-                        startEscapeSequence();
-                    } else {
-                        doApc(b);
-                    }
+                    startEscapeSequence();
                 } else {
                     doOsc(b);
                 }
@@ -1041,12 +1028,6 @@ public final class TerminalEmulator {
                         }
                         break;
                     case ESC_PERCENT:
-                        break;
-                    case ESC_APC:
-                        doApc(b);
-                        break;
-                    case ESC_APC_ESC:
-                        doApcEsc(b);
                         break;
                     case ESC_OSC:
                         doOsc(b);
@@ -2413,35 +2394,6 @@ public final class TerminalEmulator {
                 if (LOG_ESCAPE_SEQUENCES)
                     Logger.logWarn(mClient, LOG_TAG, String.format("SGR unknown code %d", code));
             }
-        }
-    }
-
-    private void doApc(int b) {
-        switch(b) {
-            case // Bell.
-            7:
-                break;
-            case // Escape.
-            27:
-                continueSequence(ESC_APC_ESC);
-                break;
-            default:
-                collectOSCArgs(b);
-                continueSequence(ESC_OSC);
-        }
-    }
-
-    private void doApcEsc(int b) {
-        switch(b) {
-            case '\\':
-                break;
-            default:
-                // The ESC character was not followed by a \, so insert the ESC and
-                // the current character in arg buffer.
-                collectOSCArgs(27);
-                collectOSCArgs(b);
-                continueSequence(ESC_APC);
-                break;
         }
     }
 
