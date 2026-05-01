@@ -1,1 +1,0 @@
-[https://github.com/termux/termux-packages/issues?utf8=✓&q=Lua](https://github.com/termux/termux-packages/issues?utf8=✓&q=Lua)
